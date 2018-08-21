@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D86942A212C21460057CA9C /* AudioUnitWorker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D869428212C21460057CA9C /* AudioUnitWorker.mm */; };
+		6D86942E212C317A0057CA9C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D86942C212C317A0057CA9C /* AudioToolbox.framework */; };
+		6D86942F212C317A0057CA9C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D86942D212C317A0057CA9C /* AudioUnit.framework */; };
+		6D869431212C34440057CA9C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D869430212C34440057CA9C /* CoreFoundation.framework */; };
 		6DCFFD92212606250031BAC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCFFD91212606250031BAC0 /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +27,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6D869428212C21460057CA9C /* AudioUnitWorker.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioUnitWorker.mm; sourceTree = "<group>"; };
+		6D869429212C21460057CA9C /* AudioUnitWorker.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitWorker.hpp; sourceTree = "<group>"; };
+		6D86942C212C317A0057CA9C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		6D86942D212C317A0057CA9C /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		6D869430212C34440057CA9C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		6DCFFD8E212606250031BAC0 /* wav_dumper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = wav_dumper; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DCFFD91212606250031BAC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -32,17 +41,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D869431212C34440057CA9C /* CoreFoundation.framework in Frameworks */,
+				6D86942E212C317A0057CA9C /* AudioToolbox.framework in Frameworks */,
+				6D86942F212C317A0057CA9C /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6D86942B212C317A0057CA9C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6D869430212C34440057CA9C /* CoreFoundation.framework */,
+				6D86942C212C317A0057CA9C /* AudioToolbox.framework */,
+				6D86942D212C317A0057CA9C /* AudioUnit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6DCFFD85212606250031BAC0 = {
 			isa = PBXGroup;
 			children = (
 				6DCFFD90212606250031BAC0 /* wav_dumper */,
 				6DCFFD8F212606250031BAC0 /* Products */,
+				6D86942B212C317A0057CA9C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +81,8 @@
 			isa = PBXGroup;
 			children = (
 				6DCFFD91212606250031BAC0 /* main.cpp */,
+				6D869428212C21460057CA9C /* AudioUnitWorker.mm */,
+				6D869429212C21460057CA9C /* AudioUnitWorker.hpp */,
 			);
 			path = wav_dumper;
 			sourceTree = "<group>";
@@ -118,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D86942A212C21460057CA9C /* AudioUnitWorker.mm in Sources */,
 				6DCFFD92212606250031BAC0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,7 +183,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -215,7 +241,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;

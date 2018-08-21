@@ -10,6 +10,7 @@
 #include <fstream>
 #include <math.h>
 
+#include "AudioUnitWorker.hpp"
 using namespace std;
 
 #pragma pack(1)
@@ -113,5 +114,6 @@ int main(int argc, const char* argv[])
     fDurationSeconds = fDurationSeconds - (iDurationMinutes * 60);
     cout << "Duration: " << iDurationMinutes << ':' << fDurationSeconds << endl;
     
+    AudioUnitWorker::initAudioUnit();
     return 0;
 }
