@@ -19,6 +19,21 @@ using namespace std;
 
 #include "AudioUnitWorker.hpp"
 
+void dumpAUParameter( AUParameter *param )
+{
+	NSLog( @"DisplayName: %@", param.displayName );
+	NSLog( @"UnitName: %@", param.unitName );
+	NSLog( @"Identifier: %@", param.identifier );
+	NSLog( @"Max value: %f", param.maxValue );
+	NSLog( @"Mim value: %f", param.minValue );
+	NSLog( @"Value: %f", param.value );
+
+	for( NSString *str in param.valueStrings )
+	{
+		NSLog( @"ValueString %@", str );
+	}
+}
+
 void AudioUnitWorker::initAudioUnit()
 {
     //AudioUnit audioUnit;
@@ -59,7 +74,10 @@ void AudioUnitWorker::initAudioUnit()
     
     NSLog( @"%@", audioUnit.audioUnitName );
     NSLog( @"%@", audioUnit.audioUnitShortName );
-    NSLog( @"%d", audioUnit.canPerformOutput);
-    NSLog( @"%d", audioUnit.inputBusses.count );
-    CFShow((CFErrorRef)error);
+    //NSLog( @"%d", audioUnit.canPerformOutput);
+	for( AUParameter *param in audioUnit.parameterTree.allParameters )
+	{
+		NSLog( @"---------------------" );
+		dumpAUParameter( param );
+	}
 }
