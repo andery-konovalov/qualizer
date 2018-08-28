@@ -13,5 +13,6 @@ class AudioUnitWorker
 {
 public:
     static void initAudioUnit();
+    void init2( );
 };
 #endif /* AudiUnitWorker_hpp */

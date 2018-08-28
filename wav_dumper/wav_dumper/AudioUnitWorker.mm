@@ -10,7 +10,7 @@
 #include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AUComponent.h>
 #include <AudioUnit/AudioComponent.h>
-//#include <Foundation/NSObjCRuntime.h>
+#include <AVFoundation/AVFoundation.h>
 
 #include <iostream>
 
@@ -74,10 +74,23 @@ void AudioUnitWorker::initAudioUnit()
     
     NSLog( @"%@", audioUnit.audioUnitName );
     NSLog( @"%@", audioUnit.audioUnitShortName );
+    AUAudioUnitBusArray *busArr = audioUnit.outputBusses;
+    NSLog( @"Output buses count %u", busArr.count );
+    
+    AUAudioUnitBus *outBus = [busArr objectAtIndexedSubscript:0];
+    NSLog( @"Output bus name %@", outBus.name );
+    outBus.
     //NSLog( @"%d", audioUnit.canPerformOutput);
 	for( AUParameter *param in audioUnit.parameterTree.allParameters )
 	{
 		NSLog( @"---------------------" );
 		dumpAUParameter( param );
 	}
+}
+
+void AudioUnitWorker::init2( )
+{
+    //AVAudioEngine *engine = [AVAudioEngine new];
+    //AVAudioFormat * audioFormat = [engine.outputNode outputFormatForBus:0];
+    
 }
