@@ -11,6 +11,7 @@
 #include <AudioUnit/AUComponent.h>
 #include <AudioUnit/AudioComponent.h>
 #include <AVFoundation/AVFoundation.h>
+#include <CoreAudio/CoreAudio.h>
 
 #include <iostream>
 
@@ -34,7 +35,17 @@ void dumpAUParameter( AUParameter *param )
 	}
 }
 
-void AudioUnitWorker::initAudioUnit()
+void dumpStreamFormatDescription( const AudioStreamBasicDescription *streamDescription )
+{
+    NSLog( @"Bits per channel %d", streamDescription->mBitsPerChannel );
+    NSLog( @"Bytes per frame %d", streamDescription->mBytesPerFrame );
+    NSLog( @"Bytes per packet %d", streamDescription->mBytesPerPacket );
+    NSLog( @"ChannelsPerFrame %d", streamDescription->mChannelsPerFrame );
+    NSLog( @"Frames per packet %d", streamDescription->mFramesPerPacket );
+}
+
+
+void AudioUnitWorker::initAudioUnit( std::function<void(void *data, uint32_t data_size )> render_callback )
 {
     //AudioUnit audioUnit;
     AudioComponentDescription desc = {0};
@@ -48,8 +59,9 @@ void AudioUnitWorker::initAudioUnit()
     //Every Component has a subType, which will give a clearer picture
     //of what this components function will be.
     
-    desc.componentSubType = kAudioUnitSubType_DefaultOutput;
-    
+    //desc.componentSubType = kAudioUnitSubType_DefaultOutput;
+    desc.componentSubType = kAudioUnitSubType_HALOutput;
+
     //All AudioUnits in AUComponent.h must use
     //"kAudioUnitManufacturer_Apple" as the Manufacturer
     
@@ -78,14 +90,39 @@ void AudioUnitWorker::initAudioUnit()
     NSLog( @"Output buses count %u", busArr.count );
     
     AUAudioUnitBus *outBus = [busArr objectAtIndexedSubscript:0];
+    NSLog( @"Chanels count %l", outBus.format.channelCount );
     NSLog( @"Output bus name %@", outBus.name );
-    outBus.
+    NSLog( @"OutBus sample rate %f", outBus.format.sampleRate );
+    
+    dumpStreamFormatDescription( outBus.format.streamDescription );
+    
+    AudioStreamBasicDescription streamDescription;
+    AVAudioFormat *format = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:outBus.format.sampleRate channels:1];
+    [[audioUnit.inputBusses objectAtIndexedSubscript:0] setFormat:format error:&error];
+    NSLog( @"Set fromat error %@", error );
+    
+    //outBus.
+    audioUnit.outputProvider = ^AUAudioUnitStatus(AudioUnitRenderActionFlags * _Nonnull actionFlags, const AudioTimeStamp * _Nonnull timestamp, AUAudioFrameCount frameCount, NSInteger inputBusNumber, AudioBufferList * _Nonnull inputData) {
+        if( inputData->mNumberBuffers > 0 )
+        {
+            render_callback( inputData->mBuffers[0].mData, inputData->mBuffers[0].mDataByteSize );
+            
+        }
+        return noErr;
+    };
+    
+    [audioUnit allocateRenderResourcesAndReturnError:&error];
+    [audioUnit startHardwareAndReturnError:&error];
+    sleep( 3 );
+    [audioUnit stopHardware];
+/*
     //NSLog( @"%d", audioUnit.canPerformOutput);
 	for( AUParameter *param in audioUnit.parameterTree.allParameters )
 	{
 		NSLog( @"---------------------" );
 		dumpAUParameter( param );
 	}
+*/
 }
 
 void AudioUnitWorker::init2( )

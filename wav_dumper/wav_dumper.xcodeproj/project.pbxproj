@@ -12,6 +12,7 @@
 		6D86942F212C317A0057CA9C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D86942D212C317A0057CA9C /* AudioUnit.framework */; };
 		6D869431212C34440057CA9C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D869430212C34440057CA9C /* CoreFoundation.framework */; };
 		6DCFFD92212606250031BAC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCFFD91212606250031BAC0 /* main.cpp */; };
+		6DD70801213C69C60096BE11 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD70800213C69C60096BE11 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,7 @@
 		6D869430212C34440057CA9C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		6DCFFD8E212606250031BAC0 /* wav_dumper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = wav_dumper; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DCFFD91212606250031BAC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		6DD70800213C69C60096BE11 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DD70801213C69C60096BE11 /* AVFoundation.framework in Frameworks */,
 				6D869431212C34440057CA9C /* CoreFoundation.framework in Frameworks */,
 				6D86942E212C317A0057CA9C /* AudioToolbox.framework in Frameworks */,
 				6D86942F212C317A0057CA9C /* AudioUnit.framework in Frameworks */,
@@ -53,6 +56,7 @@
 		6D86942B212C317A0057CA9C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6DD70800213C69C60096BE11 /* AVFoundation.framework */,
 				6D869430212C34440057CA9C /* CoreFoundation.framework */,
 				6D86942C212C317A0057CA9C /* AudioToolbox.framework */,
 				6D86942D212C317A0057CA9C /* AudioUnit.framework */,

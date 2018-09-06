@@ -66,7 +66,7 @@ struct WAVHEADER
     
     // Так называемая "глубиная" или точность звучания. 8 бит, 16 бит и т.д.
     uint16_t bitsPerSample;
-    
+    char should_be_fixed[2];
     // Подцепочка "data" содержит аудио-данные и их размер.
     
     // Содержит символы "data"
@@ -107,15 +107,44 @@ int main(int argc, const char* argv[])
     cout << "Sample rate: " << header.sampleRate << endl
          << "Channels: " << header.numChannels << endl
          << "Bits per sample: " << header.bitsPerSample << endl
-         << "Byte rate: " << header.byteRate << endl;
-    
+         << "Byte rate: " << header.byteRate << endl
+         << "Audio format: " << header.audioFormat << endl
+         << "Chunk size: " << header.chunkSize << endl
+         << "BlockAlign: " << header.blockAlign << endl
+         << "Data size: " << header.subchunk2Size << endl;
+
     // Посчитаем длительность воспроизведения в секундах
     float fDurationSeconds = 1.f * header.subchunk2Size / (header.bitsPerSample / 8) / header.numChannels / header.sampleRate;
     int iDurationMinutes = (int)floor(fDurationSeconds) / 60;
     fDurationSeconds = fDurationSeconds - (iDurationMinutes * 60);
     cout << "Duration: " << iDurationMinutes << ':' << fDurationSeconds << endl;
     
-    AudioUnitWorker::initAudioUnit();
+    uint32_t total_byte_processed = 0;
+    auto lmbd = [&in_file, &total_byte_processed, &header]( void *data, uint32_t data_size )
+    {
+        uint32_t buffer[512];
+        uint32_t buffer_ptr = 0;
+
+        while( buffer_ptr < data_size/2 )
+        {
+            auto read_cnt = in_file.read(reinterpret_cast< char * >( buffer ), 512 * sizeof( uint32_t ) ).gcount( );
+            if( read_cnt > 0 )
+            {
+                for( size_t i = 0; i < read_cnt / 4; i ++ )
+                {
+                    ((uint16_t *)data)[buffer_ptr ++] = *((uint16_t *)&buffer[i]);
+                    
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+      
+    };
+    
+    AudioUnitWorker::initAudioUnit( lmbd );
     
    // AVAudioUnit
     return 0;
