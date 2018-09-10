@@ -12,7 +12,7 @@
 class AudioUnitWorker
 {
 public:
-    static void initAudioUnit( std::function<void(void *data, uint32_t data_size, void *data_2, uint32_t data_size_2 )> render_callback );
+    static void initAudioUnit( std::function<void(void **data, uint32_t data_size, float sampleTime )> render_callback );
     void init2( );
 };
 #endif /* AudiUnitWorker_hpp */

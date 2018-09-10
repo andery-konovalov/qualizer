@@ -53,7 +53,7 @@ void dumpStreamFormatDescription( const AudioStreamBasicDescription *streamDescr
 }
 
 
-void AudioUnitWorker::initAudioUnit( std::function<void(void *data, uint32_t data_size, void *data_2, uint32_t data_size_2 )> render_callback )
+void AudioUnitWorker::initAudioUnit( std::function<void(void **data, uint32_t data_size, float )> render_callback )
 {
     //AudioUnit audioUnit;
     AudioComponentDescription desc = {0};
@@ -118,23 +118,25 @@ void AudioUnitWorker::initAudioUnit( std::function<void(void *data, uint32_t dat
     NSLog( @"Output bus name %@", outBus.name );
     NSLog( @"OutBus sample rate %f", outBus.format.sampleRate );
     
-    //dumpStreamFormatDescription( outBus.format.streamDescription );
+    dumpStreamFormatDescription( outBus.format.streamDescription );
     
 	AudioStreamBasicDescription streamDescription = {0};
-	streamDescription.mSampleRate = 8000.0;
+	streamDescription.mSampleRate = 44100.0;
 	streamDescription.mBitsPerChannel = 32;
 	streamDescription.mBytesPerFrame = 4;
 	streamDescription.mBytesPerPacket = 4;
 	streamDescription.mChannelsPerFrame = 1;
 	streamDescription.mFramesPerPacket = 1;
+	streamDescription.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger|kLinearPCMFormatFlagIsAlignedHigh;
 	streamDescription.mFormatID = kAudioFormatLinearPCM;
 	
-	AVAudioFormat *format = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:0.0 channels:1];
-//	format = [[AVAudioFormat alloc] initWithStreamDescription:&streamDescription];
+	AVAudioFormat *format = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100.0 channels:1];
+	format = [[AVAudioFormat alloc] initWithStreamDescription:&streamDescription];
 	//format
 	//[[audioUnit.outputBusses objectAtIndexedSubscript:0] setFormat:format error:&error];
 	//NSLog( @"Set fromat error %@", error );
     [[audioUnit.inputBusses objectAtIndexedSubscript:0] setFormat:format error:&error];
+	NSLog( @"Busses cnt %d", [audioUnit.inputBusses count]);
     NSLog( @"Set fromat error %@", error );
 	dumpStreamFormatDescription( [audioUnit.inputBusses objectAtIndexedSubscript:0].format.streamDescription );
 /*
@@ -162,17 +164,10 @@ void AudioUnitWorker::initAudioUnit( std::function<void(void *data, uint32_t dat
 												  AUAudioFrameCount frameCount,
 												  NSInteger inputBusNumber,
 												  AudioBufferList * _Nonnull inputData) {
-	//	NSLog( @"Sumple time %f", timestamp->mSampleTime );
-		if( inputData->mNumberBuffers > 1 )
-        {
-            render_callback( inputData->mBuffers[0].mData, inputData->mBuffers[0].mDataByteSize,
-							 inputData->mBuffers[1].mData, inputData->mBuffers[1].mDataByteSize );
-            
-        }
-		else
-		{
-			render_callback( inputData->mBuffers[0].mData, inputData->mBuffers[0].mDataByteSize, NULL, 0 );
-		}
+		//NSLog( @"Sample time %f", timestamp->mSampleTime );
+        render_callback(&inputData->mBuffers[0].mData,
+						inputData->mBuffers[0].mDataByteSize,
+						timestamp->mSampleTime);
         return noErr;
     };
 	CFStringRef result_str;
@@ -188,7 +183,7 @@ void AudioUnitWorker::initAudioUnit( std::function<void(void *data, uint32_t dat
 	NSLog( @"error %@", error );
     [audioUnit startHardwareAndReturnError:&error];
 	NSLog( @"error %@", error );
-    sleep( 4 );
+    sleep( 30 );
     [audioUnit stopHardware];
 /*
     //NSLog( @"%d", audioUnit.canPerformOutput);

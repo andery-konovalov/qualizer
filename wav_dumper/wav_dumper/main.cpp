@@ -10,6 +10,7 @@
 #include <fstream>
 #include <math.h>
 
+
 #include "AudioUnitWorker.hpp"
 
 using namespace std;
@@ -66,7 +67,7 @@ struct WAVHEADER
     
     // Так называемая "глубиная" или точность звучания. 8 бит, 16 бит и т.д.
     uint16_t bitsPerSample;
-    //char extraParamSize[2];
+    char extraParamSize[2];
     // Подцепочка "data" содержит аудио-данные и их размер.
     
     // Содержит символы "data"
@@ -122,11 +123,17 @@ int main(int argc, const char* argv[])
 	const int buffer_len = 176400 * 6;
 	
 	uint8_t buffer[buffer_len];
-	auto read_cnt = in_file.read(reinterpret_cast< char * >( buffer ), buffer_len ).gcount( );
+	//auto read_cnt = in_file.read(reinterpret_cast< char * >( buffer ), buffer_len ).gcount( );
 	
     uint32_t buffer_ptr = 0;
-    auto lmbd = [&buffer, &buffer_len, &buffer_ptr, &header]( void *data, uint32_t data_size, void *data_2	, uint32_t data_size_2 )
+    auto lmbd = [&buffer, &buffer_len, &buffer_ptr, &header, &in_file]( void **data_, uint32_t data_size, float sampleTime )
     {
+		//cout << "Sample time: " << sampleTime << endl;
+		if( sampleTime * 4 != buffer_ptr )
+		{
+//			cout << "!!!!!!" << endl;
+		}
+		auto read_cnt = in_file.read(reinterpret_cast< char * >( *data_ ), data_size ).gcount( );
 //		memset(data_2, 0, data_size_2);
 		//memset(data, 0, data_size);
 /*
@@ -135,14 +142,18 @@ int main(int argc, const char* argv[])
 		memcpy( data_2, &buffer[buffer_ptr], d_size );
 		buffer_ptr += d_size;
 */
-
-		for(uint32_t i = 0,j = buffer_ptr; j < buffer_len / 1 && i < data_size / 1   ;i+=1,j+=1, buffer_ptr += 1)
+/*
+		void *data = *data_;
+		for(uint32_t i = 0,j = buffer_ptr; j < buffer_len / 2 && i < data_size / 2 ;i+=1, j+=1, buffer_ptr += 1)
 		{
-			((uint8_t *)data)[i] = ((uint8_t *)buffer)[j + 1];
+			//uint8_t byte = ((uint8_t *)buffer)[j];
+			((uint16_t *)data)[i] = (((uint16_t *)buffer)[j]);
+//			((uint8_t *)data)[i + 1] = ((uint8_t *)buffer)[j];
+			
 			//((uint16_t *)data_2)[i] = ((uint16_t *)buffer)[j];
 			//((uint16_t *)data)[i + 1] = ((uint16_t *)buffer)[j + 1];
 		}
-
+*/
     };
     
     AudioUnitWorker::initAudioUnit( lmbd );
