@@ -66,7 +66,7 @@ struct WAVHEADER
     
     // Так называемая "глубиная" или точность звучания. 8 бит, 16 бит и т.д.
     uint16_t bitsPerSample;
-    char should_be_fixed[2];
+    //char extraParamSize[2];
     // Подцепочка "data" содержит аудио-данные и их размер.
     
     // Содержит символы "data"
@@ -118,30 +118,31 @@ int main(int argc, const char* argv[])
     int iDurationMinutes = (int)floor(fDurationSeconds) / 60;
     fDurationSeconds = fDurationSeconds - (iDurationMinutes * 60);
     cout << "Duration: " << iDurationMinutes << ':' << fDurationSeconds << endl;
-    
-    uint32_t total_byte_processed = 0;
-    auto lmbd = [&in_file, &total_byte_processed, &header]( void *data, uint32_t data_size )
+	
+	const int buffer_len = 176400 * 6;
+	
+	uint8_t buffer[buffer_len];
+	auto read_cnt = in_file.read(reinterpret_cast< char * >( buffer ), buffer_len ).gcount( );
+	
+    uint32_t buffer_ptr = 0;
+    auto lmbd = [&buffer, &buffer_len, &buffer_ptr, &header]( void *data, uint32_t data_size, void *data_2	, uint32_t data_size_2 )
     {
-        uint32_t buffer[512];
-        uint32_t buffer_ptr = 0;
+//		memset(data_2, 0, data_size_2);
+		//memset(data, 0, data_size);
+/*
+		uint32_t d_size = (buffer_len - buffer_ptr > data_size) ? data_size : buffer_len - buffer_ptr;
+		memcpy( data, &buffer[buffer_ptr], d_size );
+		memcpy( data_2, &buffer[buffer_ptr], d_size );
+		buffer_ptr += d_size;
+*/
 
-        while( buffer_ptr < data_size/2 )
-        {
-            auto read_cnt = in_file.read(reinterpret_cast< char * >( buffer ), 512 * sizeof( uint32_t ) ).gcount( );
-            if( read_cnt > 0 )
-            {
-                for( size_t i = 0; i < read_cnt / 4; i ++ )
-                {
-                    ((uint16_t *)data)[buffer_ptr ++] = *((uint16_t *)&buffer[i]);
-                    
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-      
+		for(uint32_t i = 0,j = buffer_ptr; j < buffer_len / 1 && i < data_size / 1   ;i+=1,j+=1, buffer_ptr += 1)
+		{
+			((uint8_t *)data)[i] = ((uint8_t *)buffer)[j + 1];
+			//((uint16_t *)data_2)[i] = ((uint16_t *)buffer)[j];
+			//((uint16_t *)data)[i + 1] = ((uint16_t *)buffer)[j + 1];
+		}
+
     };
     
     AudioUnitWorker::initAudioUnit( lmbd );
